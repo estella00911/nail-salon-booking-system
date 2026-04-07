@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { createBookingService, getBookingByIdService, getMyBookingsService } from "./booking.service.js";
+import { cancelBookingByIdService, createBookingService, getBookingByIdService, getMyBookingsService } from "./booking.service.js";
 import type { ApiResponse } from "../../types/api.types.js";
-import type { BookingResponseData } from "./booking.interface.js";
+import type { BookingResponseData, getBookingInput } from "./booking.interface.js";
 
 export const createBookingController = async(req:Request, res: Response, next: NextFunction) => {
   try {
@@ -33,7 +33,7 @@ export const getMyBookingsController = async (req: Request, res: Response, next:
     const bookings = await getMyBookingsService(userId);
     const response = {
       success: true,
-      message: "successfully fetched bookings",
+      message: "Successfully fetched bookings",
       data: bookings
     }
     return res.status(200).json(response);
@@ -44,11 +44,40 @@ export const getMyBookingsController = async (req: Request, res: Response, next:
 
 export const getBookingByIdController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = await getBookingByIdService(req.validated!.id!);
+    const bookingId = Number(req.validated!.id);
+    const currUserId = Number(req.user!.userId);
+    
+    const input: getBookingInput = {
+      bookingId,
+      currUserId
+    }
+
+    const data = await getBookingByIdService(input);
     const response = {
       success: true, 
-      message: 'successfully fetched a booking',
+      message: 'Successfully fetched a booking',
       data
+    }
+    return res.status(200).json(response);
+  } catch(err) {
+    return next(err)
+  }
+}
+
+export const cancelBookingByIdController = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const bookingId = Number(req.validated!.id);
+    const currUserId = Number(req.user!.userId);
+    
+    const input: getBookingInput = {
+      bookingId,
+      currUserId
+    }
+    const result = await cancelBookingByIdService(input);
+    const response = {
+      success: true,
+      message: 'Successfully cancel a booking',
+      data: result
     }
     return res.status(200).json(response);
   } catch(err) {

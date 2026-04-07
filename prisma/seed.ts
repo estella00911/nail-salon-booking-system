@@ -131,18 +131,68 @@ async function main() {
   // availabilitites
   await prisma.availability.createMany({
     data: [
-      {artistId: 4, startTime: new Date("2026-04-16T01:00:00.000Z"), endTime: new Date("2026-04-16T19:00:00.000Z"),},
-      {artistId: 4, startTime: new Date("2026-04-17T01:00:00.000Z"), endTime: new Date("2026-04-17T10:00:00.000Z"),},
+      { artistId: 4, startTime: new Date("2026-05-16T02:00:00.000Z"), endTime: new Date("2026-05-16T04:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-16T05:00:00.000Z"), endTime: new Date("2026-05-16T08:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-16T10:00:00.000Z"), endTime: new Date("2026-05-16T13:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-17T02:00:00.000Z"), endTime: new Date("2026-05-17T04:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-17T05:00:00.000Z"), endTime: new Date("2026-05-17T08:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-17T10:00:00.000Z"), endTime: new Date("2026-05-17T13:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-18T02:00:00.000Z"), endTime: new Date("2026-05-18T04:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-18T05:00:00.000Z"), endTime: new Date("2026-05-18T08:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-19T02:00:00.000Z"), endTime: new Date("2026-05-19T04:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-19T05:00:00.000Z"), endTime: new Date("2026-05-19T08:00:00.000Z") },
+      { artistId: 4, startTime: new Date("2026-05-19T10:00:00.000Z"), endTime: new Date("2026-05-19T13:00:00.000Z") },
     ]
   })
   
   // bookings
   await prisma.booking.createMany({
     data: [
-      {userId: 3, serviceId: 1, artistId: 4, startTime: "2026-04-16T03:00:00.000Z", endTime: "2026-04-16T04:00:00.000Z", finalDuration: 60, finalPrice: 900},
-      {userId: 3, serviceId: 2, artistId: 4, startTime: "2026-04-16T11:00:00.000Z", endTime: "2026-04-16T12:30:00.000Z", finalDuration: 90, finalPrice: 1200},
-      {userId: 3, serviceId: 2, artistId: 4, startTime: "2026-04-16T09:00:00.000Z", endTime: "2026-04-16T10:30:00.000Z", finalDuration: 90, finalPrice: 1200},
-      {userId: 2, serviceId: 1, artistId: 4, startTime: "2026-04-16T07:00:00.000Z", endTime: "2026-04-16T08:00:00.000Z", finalDuration: 60, finalPrice: 900},
+      {
+        userId: 3,
+        serviceId: 1,
+        artistId: 4,
+        startTime: "2026-05-16T02:00:00.000Z",
+        endTime: "2026-05-16T03:00:00.000Z",
+        finalDuration: 60,
+        finalPrice: 900,
+      },
+      {
+        userId: 3,
+        serviceId: 1,
+        artistId: 4,
+        startTime: "2026-05-19T06:00:00.000Z",
+        endTime: "2026-05-19T07:00:00.000Z",
+        finalDuration: 60,
+        finalPrice: 900,
+      },
+      {
+        userId: 3,
+        serviceId: 1,
+        artistId: 4,
+        startTime: "2026-05-17T11:00:00.000Z",
+        endTime: "2026-05-17T13:00:00.000Z",
+        finalDuration: 90,
+        finalPrice: 1200,
+      },
+      {
+        userId: 2,
+        serviceId: 1,
+        artistId: 4,
+        startTime: "2026-05-17T03:00:00.000Z",
+        endTime: "2026-05-17T04:00:00.000Z",
+        finalDuration: 60,
+        finalPrice: 900,
+      },
+      {
+        userId: 2,
+        serviceId: 2,
+        artistId: 4,
+        startTime: "2026-05-19T02:00:00.000Z",
+        endTime: "2026-05-19T03:30:00.000Z",
+        finalDuration: 90,
+        finalPrice: 1200,
+      }
     ]
   })
 }

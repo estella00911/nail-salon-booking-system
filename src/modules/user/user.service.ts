@@ -70,10 +70,10 @@ export const loginUserService = async(input: LoginUserInput): Promise<AuthRespon
 
 export const getUserById = async(userId: number): Promise<SafeUserResponse> => {
   const existingUser = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
   if (!existingUser) {
-    throw new AppError(ERROR_CODES.AUTH.INVALID_CREDENTIALS);
+    throw new AppError(ERROR_CODES.AUTH.USER_NOT_FOUND);
   }
 
   return toSafeUserResponse(existingUser);

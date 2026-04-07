@@ -3,10 +3,6 @@ export interface SafeUserResponse {
   name: string;
   emailVerified: boolean;
   email: string;
-  role: string;
-  provider: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 interface BaseAuthInput {

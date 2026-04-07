@@ -20,6 +20,7 @@
     "target": "ES2023",
     "types": ["node"],
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // dayjs
     "ignoreDeprecations": "6.0",
   
 

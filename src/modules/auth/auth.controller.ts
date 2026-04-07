@@ -17,7 +17,7 @@ export const createUserController = async (
     })
     const response: ApiResponse<AuthResponseData> = {
       success: true,
-      message: "successfully registered.",
+      message: "Successfully registered.",
       data: user
     };
     return res.status(201).json(response);
@@ -36,7 +36,8 @@ export const loginUserController = async (req: Request, res: Response, next: Nex
       message: "Successfully logged in.",
       data: user
     };
-    return res.status(201).json(response);
+
+    return res.status(200).json(response);
   } catch(error) {
       return next(error);
   }
@@ -48,7 +49,7 @@ export const getCurrentUserController = async (req: Request, res: Response, next
     const existingUser = await getUserById(userId);
     const response:ApiResponse<SafeUserResponse> = {
       success: true,
-      message: "successfully get current user profile.",
+      message: "Successfully get current user profile.",
       data: existingUser
     };
     return res.status(200).json(response);

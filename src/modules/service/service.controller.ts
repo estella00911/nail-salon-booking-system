@@ -23,7 +23,7 @@ export const getAllServicesController = async(
       const result = await getPaginatedServices(page, pageSize, serviceFilter);
       response = {
         success: true,
-        message: "successfully fetched services",
+        message: "Successfully fetched services",
         pagination: result.pagination,
         data: result.data,
       };
@@ -31,7 +31,7 @@ export const getAllServicesController = async(
       const result = await getAllServices(serviceFilter);
       response = {
         success: true,
-        message: "successfully fetched services",
+        message: "Successfully fetched services",
         data: result,
       }
     }
@@ -40,6 +40,7 @@ export const getAllServicesController = async(
     return next(err);
   }
 }
+
 export const getServiceByIdController = async (
   req: Request,
   res: Response,
@@ -51,7 +52,7 @@ export const getServiceByIdController = async (
 
     const response: ApiResponse<Service> = {
       success: true,
-      message: "Successfully fetched service",
+      message: "Successfully fetched a service",
       data: data,
     };
 

@@ -2,11 +2,15 @@
 
 ## Overview
 
-Nail Salon Booking System is a backend-focused full-stack project designed for appointment booking and service management.
+### Problem & Solution
+This project solves real-world scheduling problems in nail salons. Instead of manual booking via messages or phone calls, it provides a system where users can view available time slots and make bookings directly, reducing double booking and improving efficiency.
 
+### Technical Highlights
 This project demonstrates RESTful API design, authentication and authorization, booking workflow implementation, relational database modeling, and environment-based development with Docker and Prisma.
 
-The current version focuses on customer booking flow and service APIs. Admin management and frontend integration is planned for future iterations.
+### Scope
+The current version focuses on customer booking flow and service APIs. Admin management and frontend integration are planned for future iterations.
+>>>>>>> 7617fc2 (feat: add available slots, swagger API docs)
 
 ## Techniques Used
 ### Backend
@@ -42,11 +46,19 @@ The current version focuses on customer booking flow and service APIs. Admin man
 - Pagination support
 - Get service details by ID
 
+<<<<<<< HEAD
 ### Booking ((In Progress))
 - Create booking
 - View my bookings
 - View booking details
 - Cancel booking
+=======
+### Booking
+- Create a booking
+- View my bookings
+- View booking details
+- Cancel a booking with validation (status, ownership, and time constraints)
+>>>>>>> 7617fc2 (feat: add available slots, swagger API docs)
 
 ### Error Handling
 - Centralized error handler middleware
@@ -70,16 +82,21 @@ The current version focuses on customer booking flow and service APIs. Admin man
 - `GET /api/bookings/:id`
 - `PATCH /api/bookings/:id/cancel`
 
+### Availability
+- `GET /api/availability/slots`
+
 ## Project Structure
 
 ```text
 src/
+├── lib/
 ├── common/
 │   └── errors/
 ├── middleware/
 ├── modules/
 │   ├── user/
 │   ├── service/
+|   ├── availability/
 │   └── booking/
 ├── types/
 ├── utils/
@@ -90,7 +107,7 @@ src/
 
 ## Future Improvements
 - Admin APIs
-- Available slots
+- Service filtering and search on the browsing page (e.g., price, duration, tags)
 - Reschedule booking
 - Frontend integration
 - AWS deployment

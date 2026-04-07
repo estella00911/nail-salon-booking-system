@@ -7,6 +7,12 @@ export const ERROR_CODES = {
     },
   },
   AUTH: {
+    USER_NOT_FOUND: {
+      type: "auth/user-not-found",
+      title: "Unauthorized",
+      status: 401,
+      detail: "Authenticated user no longer exists",
+    },
     INVALID_CREDENTIALS: {
       type: "auth/invalid-credentials",
       title: "Unauthorized",
@@ -115,9 +121,9 @@ export const ERROR_CODES = {
       status: 400
     },
     TIME_OVERLAP: {
-      type: "booking/time-not-available",
-      title: "Time slot is not available",
-      detail: "The selected time is not available for booking",
+      type: "booking/time-overlap",
+      title: "Booking conflict",
+      detail: "The selected time is already booked",
       status: 409
     }, 
     ARTIST_NOT_FOUND: {
@@ -131,6 +137,27 @@ export const ERROR_CODES = {
       title: "Booking not found",
       detail: "The requested booking does not exist",
       status: 404
+    },
+
+    FORBIDDEN: {
+      type: "booking/forbidden",
+      title: "Forbidden",
+      detail: "You are not allowed to cancel this booking",
+      status: 403
+    },
+
+    INVALID_STATUS: {
+      type: "booking/invalid-status",
+      title: "Invalid booking status",
+      detail: "Only confirmed bookings can be cancelled",
+      status: 400
+    },
+
+    ALREADY_STARTED: {
+      type: "booking/already-started",
+      title: "Booking already started",
+      detail: "This booking has already started or passed and cannot be cancelled",
+      status: 400
     }
   }
 }

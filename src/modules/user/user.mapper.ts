@@ -7,9 +7,5 @@ export const toSafeUserResponse = (user: User): SafeUserResponse => {
     name: user.name,
     email: user.email,
     role: user.role,
-    provider: user.provider,
-    emailVerified: user.emailVerified,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
   };
 };

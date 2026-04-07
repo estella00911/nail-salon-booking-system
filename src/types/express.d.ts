@@ -11,6 +11,11 @@ declare global {
         filter?: {
           isFeatured?: boolean
           tag?: string
+        },
+        booking?: {
+          serviceId: number,
+          artistId: number,
+          date: string
         }
       }
     }

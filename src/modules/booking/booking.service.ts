@@ -1,9 +1,11 @@
 import { AppError } from "../../common/errors/app-error.js";
 import { ERROR_CODES } from "../../common/errors/error-code.js";
 import { prisma } from "../../lib/prisma.js";
-import type { BookingReqData } from "./booking.interface.js";
+import type { BookingReqData, BookingResponseData, getBookingInput, UserRoles } from "./booking.interface.js";
+import { toBookingResponse, toMyBookingResponse } from "./booking.mapper.js";
+import { checkBookingCanCancel, checkBookingNotExpired, checkBookingOwnership, type BookingCancelable } from "./booking.permission.js";
 
-export const createBookingService = async(input: BookingReqData) => {
+export const createBookingService = async(input: BookingReqData): Promise<BookingResponseData> => {
   const { userId, serviceId, artistId, startTime, endTime } = input;
   // 1. check service exists
   const service = await prisma.service.findFirst({
@@ -78,8 +80,18 @@ export const createBookingService = async(input: BookingReqData) => {
         finalPrice: service.basePrice,
         status: "CONFIRMED",
       },
+      select: {
+        id: true,
+        serviceId: true,
+        artistId: true,
+        startTime: true,
+        endTime: true,
+        status: true,
+        memo: true,
+        finalPrice: true,
+        finalDuration: true,
+      }
     });
-
     return booking;
   });
 }
@@ -110,12 +122,13 @@ export const getMyBookingsService = async (userId: number) => {
     }
   });
 
-  return bookings;
+  return toMyBookingResponse(bookings);
 };
 
-export const getBookingByIdService = async(id: number) => {
-  const booking = await prisma.booking.findUnique({
-    where: { id },
+export const getBookingByIdService = async(input: getBookingInput) => {
+  const { currUserId, bookingId } = input;
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, userId: currUserId },
     include: {
       service: {
         include: {
@@ -129,17 +142,60 @@ export const getBookingByIdService = async(id: number) => {
     }
   })
   if (!booking) {
-    return new AppError(ERROR_CODES.BOOKING.NOT_FOUND);
+    throw new AppError(ERROR_CODES.BOOKING.NOT_FOUND);
   }
-  const { serviceTags, ...restService } = booking.service;
+  
+  const users:UserRoles = {
+    bookingUserId: booking.userId,
+    currUserId
+  }
+  checkBookingOwnership(users);
+  
+  return toBookingResponse(booking);
+}
 
-  const data = {
-    ...booking,
-    service: {
-      ...restService,
-      tags: serviceTags.map(st => st.tag),
+export const cancelBookingByIdService = async(input:getBookingInput) => {
+  const { bookingId, currUserId } = input;
+  // 1. booking is exist
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+  })
+  if (!booking) {
+    throw new AppError(ERROR_CODES.BOOKING.NOT_FOUND);
+  }
+  // 3. check userId in booking == current user
+  const users:UserRoles = {
+    bookingUserId: booking.userId,
+    currUserId
+  }
+  checkBookingOwnership(users);
+ 
+  const bookingDetail: BookingCancelable = { 
+    status: booking.status,
+    endTime: booking.endTime
+  };
+  // 4. booking can be cancelled? (status should be confirmed, completed/pending/no_show can not be cancelled)
+  checkBookingCanCancel(bookingDetail);
+
+  // 5. check is booking expired?
+  checkBookingNotExpired(bookingDetail);
+  
+  const updatedBooking = await prisma.booking.update({
+    where: { id: bookingId },
+    data: {
+      status: "CANCELLED",
     },
-  }
-
-  return data;
+    select: {
+      id: true,
+      serviceId: true,
+      artistId: true,
+      startTime: true,
+      endTime: true,
+      memo: true,
+      status: true,
+      finalPrice: true,
+      finalDuration: true
+    }
+  });
+  return updatedBooking;
 }

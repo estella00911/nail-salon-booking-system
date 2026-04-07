@@ -70,6 +70,7 @@ export const getServiceById = async (id: number): Promise<Service> => {
       id: st.tag.id,
       name: st.tag.name,
       type: st.tag.type,
+      slug: st.tag.slug,
     })),
   };
 
@@ -88,6 +89,7 @@ const mapService = (services:ServiceRowWithTags[]): Service[] => {
         id: st.tag.id,
         name: st.tag.name,
         type: st.tag.type,
+        slug: st.tag.slug,
       }))
     }));
 }
@@ -131,6 +133,7 @@ const serviceSelect = {
           id: true,
           name: true,
           type: true,
+          slug: true
         },
       },
     },
