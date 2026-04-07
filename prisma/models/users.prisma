@@ -1,0 +1,26 @@
+enum Role {
+  USER
+  ADMIN
+  ARTIST
+}
+
+enum Provider {
+  GOOGLE
+  LOCAL
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  name          String
+  password      String?
+  provider      Provider @default(LOCAL)
+  role          Role     @default(USER)
+  emailVerified Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  bookings        Booking[] @relation("UserBookings")
+  artistBookings  Booking[] @relation("ArtistBooking")
+  availabilities  Availability[] @relation("ArtistAvailability")
+}

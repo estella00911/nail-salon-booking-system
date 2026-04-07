@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+.env.prod
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode/
+
+# build output
+dist/
+build/
+
+# logs
+*.log
+
+# test coverage
+/coverage
+
+# typescript
+tsconfig.tsbuildinfo
+
+# prisma
+/src/generated/prisma
+
+# nvm 
+.nvmrc

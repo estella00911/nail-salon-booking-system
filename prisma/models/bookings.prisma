@@ -1,0 +1,46 @@
+enum Status {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+model Booking {
+  id            Int        @id @default(autoincrement())
+  userId        Int
+  serviceId     Int
+  artistId      Int
+
+  startTime     DateTime  
+  endTime       DateTime
+  
+  status        Status     @default(CONFIRMED)
+  memo          String     @default("")
+
+  finalPrice    Int
+  finalDuration Int
+  
+  createdAt     DateTime   @default(now())   
+  updatedAt     DateTime   @updatedAt
+
+  user          User       @relation("UserBookings", fields: [userId], references: [id])
+  artist        User       @relation("ArtistBooking", fields: [artistId], references: [id])
+  service       Service    @relation(fields: [serviceId], references: [id])
+
+  @@index([artistId, startTime, endTime])
+}
+
+model Availability {
+  id         Int       @id @default(autoincrement())
+  artistId   Int
+  startTime  DateTime
+  endTime    DateTime
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  artist     User      @relation("ArtistAvailability", fields: [artistId], references: [id])
+
+  @@index([artistId, startTime, endTime])
+}

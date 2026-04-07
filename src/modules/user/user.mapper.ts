@@ -1,0 +1,15 @@
+import type { User } from "../../generated/prisma/client.js";
+import type { SafeUserResponse } from "./user.interface.js";
+
+export const toSafeUserResponse = (user: User): SafeUserResponse => {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    provider: user.provider,
+    emailVerified: user.emailVerified,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+};
