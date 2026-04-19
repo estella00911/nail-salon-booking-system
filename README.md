@@ -10,7 +10,6 @@ This project demonstrates RESTful API design, authentication and authorization, 
 
 ### Scope
 The current version focuses on customer booking flow and service APIs. Admin management and frontend integration are planned for future iterations.
->>>>>>> 7617fc2 (feat: add available slots, swagger API docs)
 
 ## Techniques Used
 ### Backend
@@ -46,19 +45,12 @@ The current version focuses on customer booking flow and service APIs. Admin man
 - Pagination support
 - Get service details by ID
 
-<<<<<<< HEAD
-### Booking ((In Progress))
-- Create booking
-- View my bookings
-- View booking details
-- Cancel booking
-=======
+
 ### Booking
 - Create a booking
 - View my bookings
 - View booking details
 - Cancel a booking with validation (status, ownership, and time constraints)
->>>>>>> 7617fc2 (feat: add available slots, swagger API docs)
 
 ### Error Handling
 - Centralized error handler middleware
@@ -90,6 +82,8 @@ The current version focuses on customer booking flow and service APIs. Admin man
 ```text
 src/
 ├── lib/
+├── docs/
+│   └── swagger/
 ├── common/
 │   └── errors/
 ├── middleware/

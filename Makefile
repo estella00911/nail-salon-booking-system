@@ -60,13 +60,13 @@ studio:
 
 # reset the environment (delete node_modules, package-lock.json, dist, and rebuild the project)
 reset:
-	rm -rf node_modules package-lock.json dist
+	rm -rf node_modules dist
 	npm install
 	npx prisma generate
 	npm run build
 	docker compose down
 	docker compose up --build -d
-
+	
 clean-dist:
 	rm -rf dist
 
