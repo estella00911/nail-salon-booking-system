@@ -1,8 +1,9 @@
 export interface SafeUserResponse {
   id: number;
   name: string;
-  emailVerified: boolean;
   email: string;
+  provider?: string;
+  role: string;
 }
 
 interface BaseAuthInput {

@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
-import type { AvailableSlotsReqData, Interval } from "./availability.interface.js";
+import type { AvailableSlotsReqData, FreeSlotsResData, Interval, ServiceDetail } from "./availability.interface.js";
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../common/errors/app-error.js";
 import { ERROR_CODES } from "../../common/errors/error-code.js";
 
-export const getAvailableSlotsService = async(input:AvailableSlotsReqData) => {
+export const getAvailableSlotsService = async(input:AvailableSlotsReqData): Promise<FreeSlotsResData> => {
   const {userId, artistId, serviceId, date} = input;
   // 1. check availability exist w/ artistId, serviceId, date
   const startOfDay = dayjs(date).startOf("day").toDate();
@@ -31,7 +31,7 @@ export const getAvailableSlotsService = async(input:AvailableSlotsReqData) => {
     }
   })
   if (!service) {
-    return new AppError(ERROR_CODES.SERVICE.NOT_FOUND);
+    throw new AppError(ERROR_CODES.SERVICE.NOT_FOUND);
   }
 
   // get bookings
@@ -85,8 +85,7 @@ export const getAvailableSlotsService = async(input:AvailableSlotsReqData) => {
 
     i++;
   }
-
-  const formattedFreeSlots = result.map((slot) => ({
+  const formattedFreeSlots: FreeSlotsResData["freeSlots"] = result.map((slot) => ({
     startTime: new Date(slot.startTime).toISOString(),
     endTime: new Date(slot.endTime).toISOString(),
   }));
@@ -110,7 +109,7 @@ const getFreeSlots = (t1: Interval, t2: Interval, freeSlots: Interval[]): Interv
       freeSlots.push({startTime: t1.startTime, endTime: t2.startTime });
     }
     return null;
-  } else if (t1.startTime <= t2.startTime && t2.endTime <= t1.e) {
+  } else if (t1.startTime <= t2.startTime && t2.endTime <= t1.endTime) {
     if (t1.startTime < t2.startTime) {
       freeSlots.push({startTime: t1.startTime, endTime: t2.startTime });
     }

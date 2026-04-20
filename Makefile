@@ -58,7 +58,7 @@ prisma:
 studio:
 	npx prisma studio --port 5555
 
-# reset the environment (delete node_modules, package-lock.json, dist, and rebuild the project)
+# reset the environment (delete node_modules, dist, and rebuild the project)
 reset:
 	rm -rf node_modules dist
 	npm install

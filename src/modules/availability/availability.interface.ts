@@ -4,16 +4,23 @@ export interface AvailableSlotsReqData {
   serviceId: number;
   date: string;
 }
-export interface Interval { 
-  startTime: number; 
-  endTime: number;
-}
 
 export interface ServiceDetail {
   basePrice: number;
   durationMin: number;
 }
+
+export interface Interval {
+  startTime: number;
+  endTime: number;
+}
+
+export interface FreeSlotItem {
+  startTime: string;
+  endTime: string;
+}
+
 export interface FreeSlotsResData {
   service: ServiceDetail;
-  freeSlots: Interval[];
+  freeSlots: FreeSlotItem[];
 }
