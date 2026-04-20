@@ -57,46 +57,70 @@ The current version focuses on customer booking flow and service APIs. Admin man
 - Consistent API response format
 - Environment-based error detail handling
 
-## API Overview
+## API
+### Live API
 
-### Auth
+- Base URL: [https://api.lunailstudio.com](https://api.lunailstudio.com)
+- Swagger Docs: [https://api.lunailstudio.com/api-docs](https://api.lunailstudio.com)
+### API Testing (Postman)
+You can test the API using Postman.
+
+#### Setup
+1. Import collection:
+   - docs/postman_collection.json
+
+2. Import environment:
+   - docs/postman_environment.json
+
+3. Select the environment in Postman
+
+4. Run the login request first to automatically set the token
+
+5. All protected APIs will use the token automatically
+
+### API Overview
+
+#### Auth
 - `POST /api/users/register`
 - `POST /api/users/login`
 - `GET /api/users/me`
 
-### Services
+#### Services
 - `GET /api/services`
 - `GET /api/services/:id`
 
-### Bookings
+#### Bookings
 - `POST /api/bookings`
 - `GET /api/bookings/me`
 - `GET /api/bookings/:id`
 - `PATCH /api/bookings/:id/cancel`
 
-### Availability
+#### Availability
 - `GET /api/availability/slots`
 
 ## Project Structure
 
 ```text
 src/
-├── lib/
-├── docs/
-│   └── swagger/
-├── common/
-│   └── errors/
-├── middleware/
-├── modules/
-│   ├── user/
-│   ├── service/
-|   ├── availability/
-│   └── booking/
-├── types/
-├── utils/
-├── config.ts
-├── app.ts
-└── server.ts
+├── lib/                            # Shared instances (e.g., Prisma client)
+├── docs/                           # API docs, Postman collections, diagram
+│   ├── swagger/                    # swagger definitions
+│   ├── postman_collection.json     # API request collection
+│   ├── postman_environment.json    # environment variables (base_url, token)
+│   └── drawSQL.png                 # database schema diagram
+├── common/                         
+│   └── errors/                     # error classes and error codes
+├── middleware/                     # express middleware (auth, validation, error handler)
+├── modules/                        # feature-based modules
+│   ├── user/                       # auth & user profile
+│   ├── service/                    # nail services
+|   ├── availability/               # available time slots logic
+│   └── booking/                    # API for booking a reservation
+├── types/                          # shared TypeScript types
+├── utils/                          # utility functions
+├── config.ts                       # app configuration
+├── app.ts                          # express app setup
+└── server.ts                       # server entry point
 ```
 
 ## Future Improvements
@@ -104,7 +128,6 @@ src/
 - Service filtering and search on the browsing page (e.g., price, duration, tags)
 - Reschedule booking
 - Frontend integration
-- AWS deployment
 
 ## Getting Started
 ### 1. Clone Project
@@ -120,7 +143,7 @@ cp .env.example .env
 Edit `.env`:
 ```
 NODE_ENV=development
-DATABASE_URL="postgresql://postgres:prisma@localhost:8888/postgres?schema=public"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 JWT_SECRET={your_secret}
 JWT_EXPIRES_IN=7d
 ```
