@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build",
-    "start": "node ./dist/server.js",
+    "start": "node ./dist/src/server.js",
     "start:dev": "nodemon --watch src --ext ts --exec tsx src/server.ts",
     "dev": "nodemon --watch src --ext ts --exec ts-node -r tsconfig-paths/register src/server.ts",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate",

@@ -196,6 +196,10 @@ npm run start:dev
 ## System Design
 ### Database Schema
 ![DB-schema](./docs/drawSQL.jpg)
+
+### Function Map
+![function-map](./docs/function_map.png)
+
 ### UI/UX Design
 The design focuses on a simple booking flow: browse → select service → choose time → confirm booking.
 
