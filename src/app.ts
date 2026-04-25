@@ -14,7 +14,11 @@ import { swaggerSpec } from "../docs/swagger/swagger.config.js";
 // const swaggerDocument = require('./swagger.json');
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  })
+);
 
 // swagger route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
