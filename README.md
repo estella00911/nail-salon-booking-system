@@ -142,10 +142,12 @@ cp .env.example .env
 ```
 Edit `.env`:
 ```
-NODE_ENV=development
+PORT=3000                          # Server port
+NODE_ENV=production                # Set to 'production' in deployed environment; set to 'developement' in local environment
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
-JWT_SECRET={your_secret}
+JWT_SECRET=YOUR-SECRET-KEY
 JWT_EXPIRES_IN=7d
+CORS_ORIGIN=http://localhost:5173  # Development (frontend runs locally on Vite default port 5173)
 ```
 
 ##  Recommended: Local server + Docker DB
