@@ -21,10 +21,10 @@ export const ERROR_CODES = {
       // publicDetail: 'invalid input'
     },
     MISSING_TOKEN: {
-       title: "Unauthorized",
-        type: "auth/missing-token",
-        status: 401,
-        detail: "Authentication required"
+      title: "Unauthorized",
+      type: "auth/missing-token",
+      status: 401,
+      detail: "Authentication required"
     },
     INVALID_TOKEN_FORMAT: {
       type: "auth/invalid-token-format",
@@ -58,7 +58,7 @@ export const ERROR_CODES = {
       status: 409,
       detail: "Email is already registered",
     },
-  }, 
+  },
   VALIDATION: {
     REQUIRED_REGISTER_FIELDS: {
       type: "validation/required-register-fields",
@@ -125,13 +125,13 @@ export const ERROR_CODES = {
       title: "Booking conflict",
       detail: "The selected time is already booked",
       status: 409
-    }, 
+    },
     ARTIST_NOT_FOUND: {
       type: "booking/artist-not-found",
       title: "Artist not found",
       detail: "The specified artist does not exist or is not available",
       status: 404
-    }, 
+    },
     NOT_FOUND: {
       type: "booking/not-found",
       title: "Booking not found",

@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { AppError } from "../common/errors/app-error.js";
 import { ERROR_CODES } from "../common/errors/error-code.js";
-
-export const validateIdParams = (
+import { ZodError, type ZodTypeAny } from "zod";
+const validateIdParams = (
   req: Request,
   _res: Response,
   next: NextFunction
@@ -22,7 +22,7 @@ export const validateIdParams = (
   return next();
 }
 
-export const validatePaginationQuery = (
+const validatePaginationQuery = (
   req: Request,
   _res: Response,
   next: NextFunction
@@ -66,4 +66,45 @@ export const validatePaginationQuery = (
   }
 
   return next();
+};
+
+
+const validate = (schema: ZodTypeAny) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // zod check data is valid and parse it
+      const parseData = await schema.parseAsync({
+        params: req.params,
+        query: req.query,
+        body: req.body,
+      }) as {
+        body?: Request["body"];
+        query?: Request["query"];
+        params?: Request["params"];
+      };
+
+      // overwrite backc validated, clean, safe data back to req
+      if (parseData.body) req.body = parseData.body;
+      if (parseData.query) req.query = parseData.query;
+      if (parseData.params) req.params = parseData.params;
+
+      next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        // zod error to invalid parameters error and return it
+        return next(new AppError({
+          ...ERROR_CODES.COMMON.INVALID_PARAMS,
+          detail: error.issues.map(issue => issue.message).join(', ')
+          // print all error message frinedly for frontend dev
+
+        }));
+      }
+      return next(error);
+    }
+  }
+}
+export {
+  validateIdParams,
+  validatePaginationQuery,
+  validate,
 };

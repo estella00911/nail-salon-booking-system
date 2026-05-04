@@ -15,6 +15,7 @@ export const isFutureDate = (input: string): boolean => {
   return new Date(input) > new Date();
 }
 
-export const isStartBeforeEnd = (start: string, end: string): boolean => {
+export const isStartBeforeEnd = (start: Date | string, end: Date | string): boolean => {
   return new Date(start) < new Date(end);
 }
+

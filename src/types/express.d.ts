@@ -1,4 +1,4 @@
-import {jwtPayload} from './auth.types.ts';
+import { jwtPayload } from './auth.types.ts';
 
 declare global {
   namespace Express {
@@ -11,14 +11,9 @@ declare global {
         filter?: {
           isFeatured?: boolean
           tag?: string
-        },
-        booking?: {
-          serviceId: number,
-          artistId: number,
-          date: string
         }
       }
     }
   }
 }
-export {};
+export { };
