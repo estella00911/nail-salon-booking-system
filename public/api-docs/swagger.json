@@ -5,10 +5,19 @@
     "version": "1.0.0",
     "description": "Nail Salon booking system API docs"
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000"
-    }
+  servers: [
+  {
+    "url": "https://nail-salon-api.onrender.com",
+    "description": "Production server"
+  },
+  {
+    "url": "http://localhost:3000",
+    "description": "Local development server"
+  },
+  {
+    "url": "http://localhost:3000",
+    "description": "static github pages"
+  }
   ],
   "components": {
     "securitySchemes": {
