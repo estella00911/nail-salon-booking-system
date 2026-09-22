@@ -1,7 +1,8 @@
-import { Router } from 'express';
+import { Router, type RequestHandler } from 'express';
 import { requireAuth } from '../../middleware/auth.middleware.js';
 import { cancelBookingByIdController, createBookingController, getBookingByIdController, getMyBookingsController } from './booking.controller.js';
-import { validateIdParams } from '../../middleware/validate.middleware.js';
+import { createBookingSchema, idParamSchema } from './booking.validation.js';
+import { validate } from '../../middleware/validate.middleware.js';
 
 const router = Router();
 
@@ -52,7 +53,7 @@ router.use(requireAuth);
  *       409:
  *         $ref: '#/components/responses/BookingTimeOverlap'
  */
-router.post('/', createBookingController);
+router.post('/', validate(createBookingSchema), createBookingController as RequestHandler);
 
 /**
  * @openapi
@@ -70,7 +71,7 @@ router.post('/', createBookingController);
  *      401:
  *        $ref: '#/components/responses/CurrentUserUnauthorizedResponse' 
  */
-router.get('/me', getMyBookingsController);
+router.get('/me', getMyBookingsController as RequestHandler);
 
 /**
  * @openapi
@@ -100,7 +101,7 @@ router.get('/me', getMyBookingsController);
  *       403:
  *         $ref: '#/components/responses/BookingAccessForbidden'
  */
-router.get('/:id', validateIdParams, getBookingByIdController);
+router.get('/:id', validate(idParamSchema), getBookingByIdController as RequestHandler);
 
 /**
  * @openapi
@@ -129,6 +130,6 @@ router.get('/:id', validateIdParams, getBookingByIdController);
  *       400:
  *         $ref: '#/components/responses/CancelBookingBadRequestResponse'
 */
-router.patch('/:id/cancel', validateIdParams, cancelBookingByIdController);
+router.patch('/:id/cancel', validate(idParamSchema), cancelBookingByIdController as RequestHandler);
 
 export default router;

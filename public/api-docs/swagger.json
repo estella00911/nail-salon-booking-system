@@ -1,0 +1,2155 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nail Salon API document",
+    "version": "1.0.0",
+    "description": "Nail Salon booking system API docs"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "SuccessResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully processed request"
+          },
+          "data": {}
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        }
+      },
+      "ErrorDetail": {
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "auth/invalid-credentials"
+          },
+          "title": {
+            "type": "string",
+            "example": "Unauthorized"
+          },
+          "detail": {
+            "type": "string",
+            "example": "Invalid email or password"
+          },
+          "status": {
+            "type": "integer",
+            "example": 401
+          }
+        }
+      },
+      "UserDetail": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 3
+          },
+          "email": {
+            "type": "string",
+            "example": "bob@prisma.io"
+          },
+          "name": {
+            "type": "string",
+            "example": "Bob"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "ADMIN",
+              "ARTIST"
+            ],
+            "example": "USER"
+          }
+        }
+      },
+      "AuthPayload": {
+        "type": "object",
+        "required": [
+          "user",
+          "token"
+        ],
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDetail"
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1212wewq.eyJ1c2VySwqwQQWQ12iOjEsInByb3ZpZGVyIjoiTE9DQUwiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NTkyMDE2MiwiZXhwIjoxNzc2NTIqwdq-Kz5xG8PAfAReu9O8XTesrsdqqoHztZWzFMW4M4"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "name"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "alice@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345678"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alice"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "bob@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345678"
+          }
+        }
+      },
+      "GetMeSuccessBody": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully fetched services."
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserDetail"
+          }
+        }
+      },
+      "RegisterSuccessBody": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SuccessResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "data": {
+                "$ref": "#/components/schemas/AuthPayload"
+              }
+            }
+          }
+        ]
+      },
+      "LoginSuccessBody": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SuccessResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "data": {
+                "$ref": "#/components/schemas/AuthPayload"
+              }
+            }
+          }
+        ]
+      },
+      "BookingItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "serviceId",
+          "artistId",
+          "startTime",
+          "endTime",
+          "status",
+          "memo",
+          "finalPrice",
+          "finalDuration"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "serviceId": {
+            "type": "integer",
+            "example": 1
+          },
+          "artistId": {
+            "type": "integer",
+            "example": 4
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T10:00:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T11:00:00.000Z"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "memo": {
+            "type": "string",
+            "example": "abc"
+          },
+          "finalPrice": {
+            "type": "integer",
+            "example": 900
+          },
+          "finalDuration": {
+            "type": "integer",
+            "example": 60
+          }
+        }
+      },
+      "BookingStatus": {
+        "type": "string",
+        "enum": [
+          "CONFIRMED",
+          "CANCELLED",
+          "COMPLETED",
+          "PENDING",
+          "NO_SHOW"
+        ]
+      },
+      "BookingWithTagItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "serviceId",
+          "artistId",
+          "startTime",
+          "endTime",
+          "status",
+          "memo",
+          "finalPrice",
+          "finalDuration",
+          "service"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "serviceId": {
+            "type": "integer",
+            "example": 1
+          },
+          "artistId": {
+            "type": "integer",
+            "example": 4
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T10:00:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T11:00:00.000Z"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "memo": {
+            "type": "string",
+            "example": "abc"
+          },
+          "finalPrice": {
+            "type": "integer",
+            "example": 900
+          },
+          "finalDuration": {
+            "type": "integer",
+            "example": 60
+          },
+          "service": {
+            "$ref": "#/components/schemas/ServiceWithTagItem"
+          }
+        }
+      },
+      "MyBookingItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "serviceId",
+          "artistId",
+          "startTime",
+          "endTime",
+          "status",
+          "memo",
+          "finalPrice",
+          "finalDuration",
+          "service",
+          "artist"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "serviceId": {
+            "type": "integer",
+            "example": 1
+          },
+          "artistId": {
+            "type": "integer",
+            "example": 4
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T10:00:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T11:00:00.000Z"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "memo": {
+            "type": "string",
+            "example": "abc"
+          },
+          "finalPrice": {
+            "type": "integer",
+            "example": 900
+          },
+          "finalDuration": {
+            "type": "integer",
+            "example": 60
+          },
+          "service": {
+            "$ref": "#/components/schemas/ServiceItem"
+          },
+          "artist": {
+            "$ref": "#/components/schemas/ArtistItem"
+          }
+        }
+      },
+      "ArtistItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 4
+          },
+          "name": {
+            "type": "string",
+            "example": "Mia"
+          }
+        }
+      },
+      "BookingDetailItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "serviceId",
+          "artistId",
+          "startTime",
+          "endTime",
+          "status",
+          "memo",
+          "finalPrice",
+          "finalDuration",
+          "service",
+          "artist"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "serviceId": {
+            "type": "integer",
+            "example": 1
+          },
+          "artistId": {
+            "type": "integer",
+            "example": 4
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T10:00:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T11:00:00.000Z"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "memo": {
+            "type": "string",
+            "nullable": true,
+            "example": "abc"
+          },
+          "finalPrice": {
+            "type": "integer",
+            "example": 900
+          },
+          "finalDuration": {
+            "type": "integer",
+            "example": 60
+          },
+          "service": {
+            "$ref": "#/components/schemas/ServiceWithTagItem"
+          },
+          "artist": {
+            "$ref": "#/components/schemas/ArtistItem"
+          }
+        }
+      },
+      "CreateBookingRequest": {
+        "type": "object",
+        "required": [
+          "serviceId",
+          "artistId",
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "serviceId": {
+            "type": "integer",
+            "example": 1
+          },
+          "artistId": {
+            "type": "integer",
+            "example": 4
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T10:00:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-20T11:00:00.000Z"
+          },
+          "memo": {
+            "type": "string",
+            "example": "Please help me keep the design simple and elegant."
+          }
+        }
+      },
+      "CreateBookingResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Booking created successfully."
+          },
+          "data": {
+            "$ref": "#/components/schemas/BookingItem"
+          }
+        }
+      },
+      "GetBookingByIdResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully fetched a booking."
+          },
+          "data": {
+            "$ref": "#/components/schemas/BookingDetailItem"
+          }
+        }
+      },
+      "GetMyBookingResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully fetched a booking."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyBookingItem"
+            }
+          }
+        }
+      },
+      "CancelBookingByIdResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "success",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully cancel a booking."
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BookingItem"
+              }
+            ]
+          }
+        }
+      },
+      "ServiceWithTagItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "imgUrl",
+          "durationMin",
+          "basePrice",
+          "tags"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "日系可愛插畫"
+          },
+          "imgUrl": {
+            "type": "string",
+            "example": "https://www.exampleImg.com/fefw"
+          },
+          "durationMin": {
+            "type": "integer",
+            "example": 60
+          },
+          "basePrice": {
+            "type": "integer",
+            "example": 900
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagItem"
+            },
+            "example": {
+              "0": {
+                "id": 1,
+                "name": "手繪",
+                "type": "TECHNIQUE",
+                "slug": "illustration"
+              },
+              "1": {
+                "id": 2,
+                "name": "日系可愛",
+                "type": "STYLE",
+                "slug": "jp-cute"
+              }
+            }
+          }
+        }
+      },
+      "ServiceItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "imgUrl",
+          "durationMin",
+          "basePrice"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "日系可愛插畫"
+          },
+          "imgUrl": {
+            "type": "string",
+            "example": "https://www.exampleImg.com/fefw"
+          },
+          "durationMin": {
+            "type": "integer",
+            "example": 60
+          },
+          "basePrice": {
+            "type": "integer",
+            "example": 900
+          }
+        }
+      },
+      "TagItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "type",
+          "slug"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "手繪"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TECHNIQUE",
+              "STYLE"
+            ],
+            "example": "TECHNIQUE"
+          },
+          "slug": {
+            "type": "string",
+            "example": "illustration"
+          }
+        }
+      },
+      "GetAllServicesResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully fetched services."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceWithTagItem"
+            }
+          }
+        }
+      },
+      "GetServiceByIdResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully fetched services."
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceWithTagItem"
+          }
+        }
+      },
+      "SlotItem": {
+        "type": "object",
+        "required": [
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-05-17T02:00:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-05-17T03:00:00.000Z"
+          }
+        }
+      },
+      "BaseServiceItem": {
+        "type": "object",
+        "required": [
+          "durationMin",
+          "basePrice"
+        ],
+        "properties": {
+          "durationMin": {
+            "type": "integer",
+            "example": 60
+          },
+          "basePrice": {
+            "type": "integer",
+            "example": 900
+          }
+        }
+      },
+      "AvailabilitySlotsResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully fetched free time slots"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "service",
+              "freeSlots"
+            ],
+            "properties": {
+              "service": {
+                "$ref": "#/components/schemas/BaseServiceItem"
+              },
+              "freeSlots": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SlotItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "InvalidIdParamsResponse": {
+        "description": "Invalid request parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "common/invalid-params",
+                "title": "Invalid request query parameters",
+                "status": 400,
+                "detail": "Invalid Params"
+              }
+            }
+          }
+        }
+      },
+      "ServiceNotFoundResponse": {
+        "description": "Service not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "service/not-found",
+                "title": "Not Found",
+                "detail": "Service not found",
+                "status": 404
+              }
+            }
+          }
+        }
+      },
+      "GetAllServicesSuccessResponse": {
+        "description": "Successfully fetched services",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAllServicesResponse"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully fetched service",
+              "data": [
+                {
+                  "id": 1,
+                  "name": "日系可愛插畫",
+                  "basePrice": 900,
+                  "durationMin": 60,
+                  "imgUrl": "https://images.unsplash.com/photo-1754799670410-b282791342c3?q=80&w=928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "isActive": true,
+                  "tags": [
+                    {
+                      "id": 10,
+                      "name": "手繪",
+                      "type": "TECHNIQUE",
+                      "slug": "illustration"
+                    },
+                    {
+                      "id": 2,
+                      "name": "日系可愛",
+                      "type": "STYLE",
+                      "slug": "jp-style"
+                    }
+                  ]
+                },
+                {
+                  "id": 2,
+                  "name": "氣質法式",
+                  "basePrice": 1200,
+                  "durationMin": 90,
+                  "imgUrl": "https://images.unsplash.com/photo-1667207229737-0adf3c700d5e?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "isActive": true,
+                  "tags": [
+                    {
+                      "id": 7,
+                      "name": "法式",
+                      "type": "TECHNIQUE",
+                      "slug": "french"
+                    },
+                    {
+                      "id": 4,
+                      "name": "氣質裸色",
+                      "type": "STYLE",
+                      "slug": "skin-color"
+                    }
+                  ]
+                },
+                {
+                  "id": 3,
+                  "name": "自然延甲",
+                  "basePrice": 1200,
+                  "durationMin": 90,
+                  "imgUrl": "https://images.unsplash.com/photo-1553375385-2d9820966cdb?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "isActive": true,
+                  "tags": [
+                    {
+                      "id": 8,
+                      "name": "延甲",
+                      "type": "TECHNIQUE",
+                      "slug": "extension"
+                    },
+                    {
+                      "id": 1,
+                      "name": "韓式簡約",
+                      "type": "STYLE",
+                      "slug": "kr-style"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "GetServiceByIdSuccessResponse": {
+        "description": "Successfully fetched a service",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetServiceByIdResponse"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully fetched service",
+              "data": {
+                "id": 1,
+                "name": "日系可愛插畫",
+                "basePrice": 900,
+                "durationMin": 60,
+                "imgUrl": "https://images.unsplash.com/photo-1754799670410-b282791342c3?q=80&w=928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "isActive": true,
+                "tags": [
+                  {
+                    "id": 10,
+                    "name": "手繪",
+                    "type": "TECHNIQUE",
+                    "slug": "illustration"
+                  },
+                  {
+                    "id": 2,
+                    "name": "日系可愛",
+                    "type": "STYLE",
+                    "slug": "jp-cute"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "GetMyBookingSuccessResponse": {
+        "description": "Booking not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetMyBookingResponse"
+            },
+            "example": {
+              "success": true,
+              "message": "Get my bookings successfully.",
+              "data": {
+                "0": {
+                  "id": 1,
+                  "serviceId": 1,
+                  "artistId": 4,
+                  "startTime": "2026-05-16T02:00:00.000Z",
+                  "endTime": "2026-05-16T03:00:00.000Z",
+                  "status": "CANCELLED",
+                  "memo": "",
+                  "finalPrice": 900,
+                  "finalDuration": 60,
+                  "service": {
+                    "id": 1,
+                    "name": "日系可愛插畫",
+                    "imgUrl": "https://images.unsplash.com/photo-1754799670410-b282791342c3?q=80&w=928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "durationMin": 60,
+                    "basePrice": 900
+                  },
+                  "artist": {
+                    "id": 4,
+                    "name": "Mia"
+                  }
+                },
+                "1": {
+                  "id": 3,
+                  "serviceId": 1,
+                  "artistId": 4,
+                  "startTime": "2026-05-17T11:00:00.000Z",
+                  "endTime": "2026-05-17T13:00:00.000Z",
+                  "status": "CONFIRMED",
+                  "memo": "",
+                  "finalPrice": 900,
+                  "finalDuration": 60,
+                  "service": {
+                    "id": 1,
+                    "name": "日系可愛插畫",
+                    "imgUrl": "https://images.unsplash.com/photo-1754799670410-b282791342c3?q=80&w=928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "durationMin": 60,
+                    "basePrice": 900
+                  },
+                  "artist": {
+                    "id": 4,
+                    "name": "Mia"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetBookingByIdSuccessResponse": {
+        "description": "Successfully fetched a booking",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetBookingByIdResponse"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully fetched a booking.",
+              "data": {
+                "id": 1,
+                "serviceId": 1,
+                "artistId": 4,
+                "startTime": "2026-04-20T10:00:00.000Z",
+                "endTime": "2026-04-20T11:00:00.000Z",
+                "status": "CONFIRMED",
+                "memo": "abc",
+                "finalPrice": 900,
+                "finalDuration": 60,
+                "service": {
+                  "id": 1,
+                  "name": "日系可愛插畫",
+                  "imgUrl": "https://www.exampleImg.com/fefw",
+                  "durationMin": 60,
+                  "basePrice": 900,
+                  "tags": [
+                    {
+                      "id": 1,
+                      "name": "手繪",
+                      "type": "TECHNIQUE",
+                      "slug": "illustration"
+                    },
+                    {
+                      "id": 2,
+                      "name": "日系可愛",
+                      "type": "STYLE",
+                      "slug": "jp-cute"
+                    }
+                  ]
+                },
+                "artist": {
+                  "id": 4,
+                  "name": "Mia"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CancelBookingByISuccessResponse": {
+        "description": "Successfully cancelled booking",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetBookingByIdResponse"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully cancelled booking",
+              "data": {
+                "id": 1,
+                "serviceId": 1,
+                "artistId": 4,
+                "startTime": "2026-04-16T03:00:00.000Z",
+                "endTime": "2026-04-16T04:00:00.000Z",
+                "status": "CANCELLED",
+                "memo": null,
+                "finalPrice": 900,
+                "finalDuration": 60
+              }
+            }
+          }
+        }
+      },
+      "CreateBookingSuccessResponse": {
+        "description": "Booking created successfully",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetBookingByIdResponse"
+            },
+            "example": {
+              "success": true,
+              "message": "Booking created successfully",
+              "data": {
+                "id": 1,
+                "serviceId": 1,
+                "artistId": 4,
+                "startTime": "2026-04-20T10:00:00.000Z",
+                "endTime": "2026-04-20T11:00:00.000Z",
+                "status": "CONFIRMED",
+                "memo": "Please help me keep the design simple and elegant.",
+                "finalPrice": 900,
+                "finalDuration": 60
+              }
+            }
+          }
+        }
+      },
+      "BookingNotFound": {
+        "description": "Booking not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "booking/not-found",
+                "title": "Booking not found",
+                "detail": "The requested booking does not exist",
+                "status": 404
+              }
+            }
+          }
+        }
+      },
+      "BookingAccessForbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "booking/forbidden",
+                "title": "Forbidden",
+                "detail": "You are not allowed to access this booking",
+                "status": 403
+              }
+            }
+          }
+        }
+      },
+      "BookingDependencyNotFoundResponse": {
+        "description": "Service not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "serviceNotFound": {
+                "summary": "Service not found",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "service/not-found",
+                    "title": "Not Found",
+                    "detail": "Service not found",
+                    "status": 404
+                  }
+                }
+              },
+              "artistNotFound": {
+                "summary": "Artist not found",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "booking/artist-not-found",
+                    "title": "Artist not found",
+                    "detail": "The specified artist does not exist or is not available",
+                    "status": 404
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "BookingInvalidParamsResponse": {
+        "description": "Invalid request parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "invalidId": {
+                "summary": "Invalid ID",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "common/invalid-params",
+                    "title": "Invalid request parameters",
+                    "detail": "serviceId must be a positive integer",
+                    "status": 400
+                  }
+                }
+              },
+              "invalidTime": {
+                "summary": "Invalid time range",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "common/invalid-params",
+                    "title": "Invalid request parameters",
+                    "detail": "startTime must be earlier than endTime",
+                    "status": 400
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "BookingTimeOverlap": {
+        "description": "Booking time conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "booking/time-overlap",
+                "title": "Booking conflict",
+                "detail": "The selected time is already booked",
+                "status": 409
+              }
+            }
+          }
+        }
+      },
+      "CancelBookingBadRequestResponse": {
+        "description": "Invalid cancel booking request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "invalidStatus": {
+                "summary": "Invalid booking status",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "booking/invalid-status",
+                    "title": "Invalid booking status",
+                    "detail": "Only confirmed bookings can be cancelled",
+                    "status": 400
+                  }
+                }
+              },
+              "alreadyStarted": {
+                "summary": "Booking already started",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "booking/already-started",
+                    "title": "Booking already started",
+                    "detail": "This booking has already started or passed and cannot be cancelled",
+                    "status": 400
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetMeSuccessResponse": {
+        "description": "Invalid request parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetMeSuccessBody"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully get current user profile",
+              "data": {
+                "id": 3,
+                "name": "Bob",
+                "email": "bob@prisma.io",
+                "role": "USER"
+              }
+            }
+          }
+        }
+      },
+      "RegisterSuccessResponse": {
+        "description": "Successfully registered.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegisterSuccessBody"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully registered.",
+              "data": {
+                "user": {
+                  "id": 3,
+                  "name": "Bob",
+                  "email": "bob@prisma.io",
+                  "role": "USER"
+                },
+                "token": {
+                  "token": "eyJhbGciOiJIUzI1212wewq.eyJ1c2VySwqwQQWQ12iOjEsInByb3ZpZGVyIjoiTE9DQUwiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NTkyMDE2MiwiZXhwIjoxNzc2NTIqwdq-Kz5xG8PAfAReu9O8XTesrsdqqoHztZWzFMW4M4"
+                }
+              }
+            }
+          }
+        }
+      },
+      "LoginSuccessResponse": {
+        "description": "Successfully logged in.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/LoginSuccessBody"
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully logged in.",
+              "data": {
+                "user": {
+                  "id": 3,
+                  "name": "Bob",
+                  "email": "bob@prisma.io",
+                  "role": "USER"
+                },
+                "token": {
+                  "token": "eyJhbGciOiJIUzI1212wewq.eyJ1c2VySwqwQQWQ12iOjEsInByb3ZpZGVyIjoiTE9DQUwiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NTkyMDE2MiwiZXhwIjoxNzc2NTIqwdq-Kz5xG8PAfAReu9O8XTesrsdqqoHztZWzFMW4M4"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EmailConflictResponse": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "auth/email-conflict",
+                "title": "Conflict",
+                "status": 409,
+                "detail": "Email already exists"
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedResponse": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "missingToken": {
+                "summary": "Missing token",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/missing-token",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Authentication required"
+                  }
+                }
+              },
+              "invalidTokenFormat": {
+                "summary": "Invalid authorization header format",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/invalid-token-format",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Invalid authorization header format"
+                  }
+                }
+              },
+              "tokenExpired": {
+                "summary": "Token expired",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/token-expired",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Authentication token has expired"
+                  }
+                }
+              },
+              "invalidToken": {
+                "summary": "Invalid token",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/invalid-token",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Invalid authentication token"
+                  }
+                }
+              },
+              "unknownTokenError": {
+                "summary": "Unknown token error",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/unknown-token-error",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Invalid token"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CurrentUserUnauthorizedResponse": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "missingToken": {
+                "summary": "Missing token",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/missing-token",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Authentication required"
+                  }
+                }
+              },
+              "invalidTokenFormat": {
+                "summary": "Invalid authorization header format",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/invalid-token-format",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Invalid authorization header format"
+                  }
+                }
+              },
+              "tokenExpired": {
+                "summary": "Token expired",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/token-expired",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Authentication token has expired"
+                  }
+                }
+              },
+              "invalidToken": {
+                "summary": "Invalid token",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/invalid-token",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Invalid authentication token"
+                  }
+                }
+              },
+              "unknownTokenError": {
+                "summary": "Unknown token error",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/unknown-token-error",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Invalid token"
+                  }
+                }
+              },
+              "userNotFound": {
+                "summary": "Authenticated user not found",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "auth/user-not-found",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Authenticated user no longer exists"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "RegisterInvalidInputResponse": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "missRequiredFields": {
+                "summary": "Miss Required Input Fields",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/required-register-fields",
+                    "title": "Bad request",
+                    "detail": "Name, email, and password are required.",
+                    "status": 400
+                  }
+                }
+              },
+              "invalidEmail": {
+                "summary": "Invalid Email",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/invalid-email",
+                    "title": "Bad request",
+                    "detail": "A valid email is required.",
+                    "status": 400
+                  }
+                }
+              },
+              "invalidPassword": {
+                "summary": "Invalid Password",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/invalid-password",
+                    "title": "Bad request",
+                    "detail": "Password must be at least 8 characters long.",
+                    "status": 400
+                  }
+                }
+              },
+              "invalidName": {
+                "summary": "Invalid Name",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/invalid-name",
+                    "title": "Bad request",
+                    "detail": "Name must be at least 2 characters long.",
+                    "status": 400
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "LoginInvalidInputResponse": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "missRequiredFields": {
+                "summary": "Miss Required Input Fields",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/required-register-fields",
+                    "title": "Bad request",
+                    "detail": "Name, email, and password are required.",
+                    "status": 400
+                  }
+                }
+              },
+              "invalidEmail": {
+                "summary": "Invalid Email",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/invalid-email",
+                    "title": "Bad request",
+                    "detail": "A valid email is required.",
+                    "status": 400
+                  }
+                }
+              },
+              "invalidPassword": {
+                "summary": "Invalid Password",
+                "value": {
+                  "success": false,
+                  "error": {
+                    "type": "validation/invalid-password",
+                    "title": "Bad request",
+                    "detail": "Password must be at least 8 characters long.",
+                    "status": 400
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "LoginIncorrectInputResponse": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "error": {
+                "type": "auth/invalid-credentials",
+                "title": "Unauthorized",
+                "detail": "Invalid email or password",
+                "status": 401
+              }
+            }
+          }
+        }
+      },
+      "AvailabilitySlotsSuccessResponse": {
+        "description": "Get a free slots from given serviceId, artistId, date",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "service": {
+                      "$ref": "#/components/schemas/BaseServiceItem"
+                    },
+                    "freeSlots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SlotItem"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "example": {
+              "success": true,
+              "message": "Successfully fetched free time slots",
+              "data": {
+                "service": {
+                  "durationMin": 60,
+                  "basePrice": 900
+                },
+                "freeSlots": [
+                  {
+                    "startTime": "2026-05-17T02:00:00.000Z",
+                    "endTime": "2026-05-17T03:00:00.000Z"
+                  },
+                  {
+                    "startTime": "2026-05-17T05:00:00.000Z",
+                    "endTime": "2026-05-17T06:00:00.000Z"
+                  },
+                  {
+                    "startTime": "2026-05-17T06:00:00.000Z",
+                    "endTime": "2026-05-17T07:00:00.000Z"
+                  },
+                  {
+                    "startTime": "2026-05-17T07:00:00.000Z",
+                    "endTime": "2026-05-17T08:00:00.000Z"
+                  },
+                  {
+                    "startTime": "2026-05-17T10:00:00.000Z",
+                    "endTime": "2026-05-17T11:00:00.000Z"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "User register",
+        "description": "Create a new user with email, password, and name",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/RegisterSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/RegisterInvalidInputResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/EmailConflictResponse"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate user with email and password, and return JWT token",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/LoginSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/LoginInvalidInputResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/LoginIncorrectInputResponse"
+          }
+        }
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "summary": "Get current user profile",
+        "description": "Retrieve the currently authenticated user's profile",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetMeSuccessResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/CurrentUserUnauthorizedResponse"
+          }
+        }
+      }
+    },
+    "/api/availability/slots": {
+      "get": {
+        "summary": "Get free slots",
+        "description": "Get free slots from given serviceId, artistId, date",
+        "tags": [
+          "Availability"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "serviceId",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Service Id"
+          },
+          {
+            "in": "query",
+            "name": "artistId",
+            "schema": {
+              "type": "integer",
+              "example": 4
+            },
+            "description": "User Id whose role is ARTIST"
+          },
+          {
+            "in": "query",
+            "name": "date",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2026-05-17"
+            },
+            "description": "selected date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AvailabilitySlotsSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidIdParamsResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ServiceNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "summary": "Create a booking",
+        "description": "Create a new booking via service, artist, and time",
+        "tags": [
+          "Bookings"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingRequest"
+              },
+              "examples": {
+                "withMemo": {
+                  "summary": "Booking with memo",
+                  "value": {
+                    "serviceId": 1,
+                    "artistId": 4,
+                    "startTime": "2026-04-20T10:00:00.000Z",
+                    "endTime": "2026-04-20T11:00:00.000Z",
+                    "memo": "Please help me keep the design simple and elegant."
+                  }
+                },
+                "withoutMemo": {
+                  "summary": "Booking without memo",
+                  "value": {
+                    "serviceId": 1,
+                    "artistId": 4,
+                    "startTime": "2026-04-20T10:00:00.000Z",
+                    "endTime": "2026-04-20T11:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/CreateBookingSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/BookingInvalidParamsResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/CurrentUserUnauthorizedResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/BookingDependencyNotFoundResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/BookingTimeOverlap"
+          }
+        }
+      }
+    },
+    "/api/bookings/me": {
+      "get": {
+        "summary": "Get list of my bookings.",
+        "description": "Get current user's booking list.",
+        "tags": [
+          "Bookings"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetMyBookingSuccessResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/CurrentUserUnauthorizedResponse"
+          }
+        }
+      }
+    },
+    "/api/bookings/:id": {
+      "get": {
+        "summary": "Get booking detail",
+        "description": "Get booking detail by booking ID",
+        "tags": [
+          "Bookings"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Booking ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetBookingByIdSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidIdParamsResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/BookingAccessForbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/BookingNotFound"
+          }
+        }
+      }
+    },
+    "/api/bookings/:id/cancel": {
+      "patch": {
+        "summary": "Cancel a booking",
+        "description": "Cancel a booking by booking ID",
+        "tags": [
+          "Bookings"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Booking ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CancelBookingByISuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/CancelBookingBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/BookingAccessForbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/BookingNotFound"
+          }
+        }
+      }
+    },
+    "/api/services": {
+      "get": {
+        "summary": "Get all services",
+        "description": "Retrieve a list of available services with optional filters and pagination",
+        "tags": [
+          "Services"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "integer",
+              "example": 10
+            },
+            "description": "Number of items per page"
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "schema": {
+              "type": "string",
+              "example": "jp-cute"
+            }
+          },
+          {
+            "in": "query",
+            "name": "isFeatured",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Filter services by featured status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetAllServicesSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidIdParamsResponse"
+          }
+        }
+      }
+    },
+    "/api/services/:id": {
+      "get": {
+        "summary": "Get a service by ID",
+        "description": "Retrieve a service by service ID",
+        "tags": [
+          "Services"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Service ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetServiceByIdSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidIdParamsResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ServiceNotFoundResponse"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

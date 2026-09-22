@@ -6,7 +6,7 @@ export interface BookingReqData {
   userId: number;
   startTime: Date;
   endTime: Date;
-  memo?: string;
+  memo?: string | undefined;
 }
 
 export interface BookingResponseData {

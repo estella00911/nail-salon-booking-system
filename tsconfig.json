@@ -1,19 +1,19 @@
 {
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": [
+      "tsconfig-paths/register"
+    ]
   },
   "compilerOptions": {
     // module resolution
-    "baseUrl": ".",
-    // path alias
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     // file Layout
     "rootDir": ".", // "./src",
-    "outDir":  "./dist",
-    
-
+    "outDir": "./dist",
     // environment Settings
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
@@ -21,24 +21,18 @@
     "types": [], // ["esnext"]
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true, // dayjs
-    "ignoreDeprecations": "6.0",
-  
-
     // other Outputs
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-
     // stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-
     // recommended Options
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-
     // "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
@@ -48,6 +42,13 @@
   },
   // "include": ["src/**/*.ts"],
   // "exclude": ["dist", "generated", "node_modules"]
-  "include": ["src/**/*.ts", "docs/**/*.ts"],
-  "exclude": ["node_modules", "dist", "generated"]
+  "include": [
+    "src/**/*.ts",
+    "docs/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "generated"
+  ]
 }

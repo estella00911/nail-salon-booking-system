@@ -13,8 +13,8 @@ export const validateAvailableSlot = (
   const { date } = req.query;
 
   // service id
-  if (isNaN(serviceId) || 
-    !Number.isInteger(serviceId) || 
+  if (isNaN(serviceId) ||
+    !Number.isInteger(serviceId) ||
     serviceId <= 0
   ) {
     return next(new AppError({
@@ -33,7 +33,7 @@ export const validateAvailableSlot = (
       detail: 'serviceId must be a positive integer'
     }));
   }
-  
+
   // date format + real date check
   if (
     !date ||
@@ -49,20 +49,20 @@ export const validateAvailableSlot = (
   }
   // check date is after current date 
   if (dayjs(date).isBefore(dayjs(), "day")) {
-  return next(new AppError({
-    ...ERROR_CODES.COMMON.INVALID_PARAMS,
-    detail: "date cannot be in the past",
-  }));
+    return next(new AppError({
+      ...ERROR_CODES.COMMON.INVALID_PARAMS,
+      detail: "date cannot be in the past",
+    }));
   }
   // TODO: allow bookings only within the next 30 days
-  req.validated = {
-    ...req.validated, 
+  req.body = {
+    ...req.body,
     booking: {
       date,
       serviceId,
       artistId
     }
   }
-  
+
   next();
 }

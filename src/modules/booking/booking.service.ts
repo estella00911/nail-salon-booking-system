@@ -5,7 +5,7 @@ import type { BookingReqData, BookingResponseData, getBookingInput, UserRoles } 
 import { toBookingResponse, toMyBookingResponse } from "./booking.mapper.js";
 import { checkBookingCanCancel, checkBookingNotExpired, checkBookingOwnership, type BookingCancelable } from "./booking.permission.js";
 
-export const createBookingService = async(input: BookingReqData): Promise<BookingResponseData> => {
+export const createBookingService = async (input: BookingReqData): Promise<BookingResponseData> => {
   const { userId, serviceId, artistId, startTime, endTime } = input;
   // 1. check service exists
   const service = await prisma.service.findFirst({
@@ -25,7 +25,7 @@ export const createBookingService = async(input: BookingReqData): Promise<Bookin
 
   // 2. check artist exists
   const artist = await prisma.user.findFirst({
-    where: {id: artistId, role: 'ARTIST', emailVerified: true }, 
+    where: { id: artistId, role: 'ARTIST', emailVerified: true },
     select: {
       id: true,
       name: true
@@ -46,7 +46,7 @@ export const createBookingService = async(input: BookingReqData): Promise<Bookin
       artistId,
       startTime: { lte: startTime },
       endTime: { gte: endTime }
-    }, 
+    },
   })
   if (!availability) {
     throw new AppError(ERROR_CODES.BOOKING.TIME_NOT_AVAILABLE);
@@ -125,7 +125,7 @@ export const getMyBookingsService = async (userId: number) => {
   return toMyBookingResponse(bookings);
 };
 
-export const getBookingByIdService = async(input: getBookingInput) => {
+export const getBookingByIdService = async (input: getBookingInput) => {
   const { currUserId, bookingId } = input;
   const booking = await prisma.booking.findFirst({
     where: { id: bookingId, userId: currUserId },
@@ -144,17 +144,17 @@ export const getBookingByIdService = async(input: getBookingInput) => {
   if (!booking) {
     throw new AppError(ERROR_CODES.BOOKING.NOT_FOUND);
   }
-  
-  const users:UserRoles = {
+
+  const users: UserRoles = {
     bookingUserId: booking.userId,
     currUserId
   }
   checkBookingOwnership(users);
-  
+
   return toBookingResponse(booking);
 }
 
-export const cancelBookingByIdService = async(input:getBookingInput) => {
+export const cancelBookingByIdService = async (input: getBookingInput) => {
   const { bookingId, currUserId } = input;
   // 1. booking is exist
   const booking = await prisma.booking.findUnique({
@@ -164,13 +164,13 @@ export const cancelBookingByIdService = async(input:getBookingInput) => {
     throw new AppError(ERROR_CODES.BOOKING.NOT_FOUND);
   }
   // 3. check userId in booking == current user
-  const users:UserRoles = {
+  const users: UserRoles = {
     bookingUserId: booking.userId,
     currUserId
   }
   checkBookingOwnership(users);
- 
-  const bookingDetail: BookingCancelable = { 
+
+  const bookingDetail: BookingCancelable = {
     status: booking.status,
     endTime: booking.endTime
   };
@@ -179,7 +179,7 @@ export const cancelBookingByIdService = async(input:getBookingInput) => {
 
   // 5. check is booking expired?
   checkBookingNotExpired(bookingDetail);
-  
+
   const updatedBooking = await prisma.booking.update({
     where: { id: bookingId },
     data: {
