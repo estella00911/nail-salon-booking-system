@@ -60,8 +60,10 @@ The current version focuses on customer booking flow and service APIs. Admin man
 ## API
 ### Live API
 
-- Base URL: [https://api.lunailstudio.com](https://api.lunailstudio.com)
-- Swagger Docs: [https://api.lunailstudio.com/api-docs](https://api.lunailstudio.com)
+<!-- - Base URL: [https://api.lunailstudio.com](https://api.lunailstudio.com) -->
+<!-- - Swagger Docs: [https://api.lunailstudio.com/api-docs](https://api.lunailstudio.com) -->
+- API Docs (Static): [https://estella00911.github.io/nail-salon-booking-system/](https://estella00911.github.io/nail-salon-booking-system/)  
+  *Documentation only; API calls are disabled because the backend is not deployed.*
 ### API Testing (Postman)
 You can test the API using Postman.
 
